@@ -20,6 +20,16 @@ by Pacman agents (in searchAgents.py).
 
 import util
 
+class BSTNode:
+
+    cost_to_node = 0
+
+    def __init__(self, node, parent, children):
+        self.node = node
+        self.parent = parent
+        self.children = children
+
+
 class SearchProblem:
     """
     This class outlines the structure of a search problem, but doesn't implement
@@ -88,20 +98,111 @@ def depthFirstSearch(problem):
     print "Is the start a goal?", problem.isGoalState(problem.getStartState())
     print "Start's successors:", problem.getSuccessors(problem.getStartState())
     """
-    "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+
+    frontier = util.Stack()
+    visited = {}
+
+    frontier.push(BSTNode((problem.getStartState(), 'Start', 0), None, []))
+
+    while not frontier.isEmpty():
+        current = frontier.pop()
+
+        if problem.isGoalState(current.node[0]):
+            directions = []
+
+            while current.node[1] != 'Start':
+                directions.append(current.node[1])
+                current = current.parent
+
+            directions = directions[::-1]
+            return directions
+
+        if not current.node[0] in visited:
+            visited[current.node[0]] = current
+
+            for successor in problem.getSuccessors(current.node[0]):
+                successor = BSTNode(successor, current, [])
+                if not successor.node[0] in visited:
+                    frontier.push(successor)
+                    current.children.append(successor)
 
 def breadthFirstSearch(problem):
     """
     Search the shallowest nodes in the search tree first.
     """
-    "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+
+    frontier = util.Queue()
+    visited = {}
+
+    frontier.push(BSTNode((problem.getStartState(), 'Start', 0), None, []))
+
+    while not frontier.isEmpty():
+        current = frontier.pop()
+
+        if problem.isGoalState(current.node[0]):
+            directions = []
+
+            while current.node[1] != 'Start':
+                directions.append(current.node[1])
+                current = current.parent
+
+            directions = directions[::-1]
+            return directions
+
+        if not current.node[0] in visited:
+            visited[current.node[0]] = current
+
+            for successor in problem.getSuccessors(current.node[0]):
+                successor = BSTNode(successor, current, [])
+                if not successor.node[0] in visited:
+                    frontier.push(successor)
+                    current.children.append(successor)
+
+    return None
 
 def uniformCostSearch(problem):
     "Search the node of least total cost first. "
-    "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+
+    frontier = util.PriorityQueue()
+    visited = {}
+
+    frontier.push(BSTNode((problem.getStartState(), 'Start', 0), None, []), 0)
+
+    while not frontier.isEmpty():
+        current = frontier.pop()
+
+        if problem.isGoalState(current.node[0]):
+            directions = []
+
+            while current.node[1] != 'Start':
+                directions.append(current.node[1])
+                current = current.parent
+
+            directions = directions[::-1]
+            return directions
+
+        if not current.node[0] in visited:
+            visited[current.node[0]] = current
+
+            for successor in problem.getSuccessors(current.node[0]):
+                successor = BSTNode(successor, current, [])
+                successor.cost_to_node = successor.node[2] + current.cost_to_node
+                if not successor.node[0] in visited:
+                    existing = False
+                    for heapNode in frontier.heap:
+                        if successor.node[0] == heapNode[2].node[0]:
+                            existing = heapNode[2]
+
+                            if existing.node[2] > successor.node[2]:
+                                frontier.heap.remove(heapNode)
+                                frontier.push(successor, successor.node[2] + successor.cost_to_node)
+                                current.children.append(successor)
+
+                    if not existing:
+                        frontier.push(successor, successor.node[2] + successor.cost_to_node)
+                        current.children.append(successor)
+
+    return None
 
 def nullHeuristic(state, problem=None):
     """
