@@ -20,8 +20,8 @@ by Pacman agents (in searchAgents.py).
 
 import util
 
-class BSTNode:
 
+class BSTNode:
     cost_to_node = 0
 
     def __init__(self, node, parent, children):
@@ -82,7 +82,8 @@ def tinyMazeSearch(problem):
     from game import Directions
     s = Directions.SOUTH
     w = Directions.WEST
-    return  [s,s,w,s,w,w,s,w]
+    return [s, s, w, s, w, w, s, w]
+
 
 def depthFirstSearch(problem):
     """
@@ -126,6 +127,7 @@ def depthFirstSearch(problem):
                     frontier.push(successor)
                     current.children.append(successor)
 
+
 def breadthFirstSearch(problem):
     """
     Search the shallowest nodes in the search tree first.
@@ -159,6 +161,7 @@ def breadthFirstSearch(problem):
                     current.children.append(successor)
 
     return None
+
 
 def uniformCostSearch(problem):
     "Search the node of least total cost first. "
@@ -204,12 +207,14 @@ def uniformCostSearch(problem):
 
     return None
 
+
 def nullHeuristic(state, problem=None):
     """
     A heuristic function estimates the cost from the current state to the nearest
     goal in the provided SearchProblem.  This heuristic is trivial.
     """
     return 0
+
 
 def aStarSearch(problem, heuristic=nullHeuristic):
     "Search the node that has the lowest combined cost and heuristic first."
