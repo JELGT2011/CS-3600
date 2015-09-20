@@ -542,13 +542,28 @@ class ClosestDotSearchAgent(SearchAgent):
     def findPathToClosestDot(self, gameState):
         "Returns a path (a list of actions) to the closest dot, starting from gameState"
         # Here are some useful elements of the startState
-        startPosition = gameState.getPacmanPosition()
-        food = gameState.getFood()
+        pacman_position = gameState.getPacmanPosition()
+        food_grid = gameState.getFood()
         walls = gameState.getWalls()
         problem = AnyFoodSearchProblem(gameState)
 
-        "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        food_list = food_grid.asList()
+
+        closest_food_distance = sys.maxint
+        closest_food = None
+
+        for food in food_list:
+            food_distance = abs(pacman_position[0] - food[0]) + abs(pacman_position[1] - food[1])
+            if food_distance < closest_food_distance:
+                closest_food_distance = food_distance
+                closest_food = food
+
+        food_list.remove(closest_food)
+
+        for food in food_list:
+            gameState.data.food[food[0]][food[1]] = False
+
+        return search.breadthFirstSearch(AnyFoodSearchProblem(gameState))
 
 
 class AnyFoodSearchProblem(PositionSearchProblem):
@@ -582,10 +597,12 @@ class AnyFoodSearchProblem(PositionSearchProblem):
         The state is Pacman's position. Fill this in with a goal test
         that will complete the problem definition.
         """
-        x, y = state
 
-        "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        for food in self.food.asList():
+            if food[0] == state[0] and food[1] == state[1]:
+                self.food[food[0]][food[1]] = False
+
+        return not self.food.asList()
 
 
 ##################
