@@ -558,12 +558,17 @@ class ClosestDotSearchAgent(SearchAgent):
                 closest_food_distance = food_distance
                 closest_food = food
 
-        food_list.remove(closest_food)
+        point1 = pacman_position
+        point2 = closest_food
 
-        for food in food_list:
-            gameState.data.food[food[0]][food[1]] = False
+        x1, y1 = point1
+        x2, y2 = point2
+        walls = gameState.getWalls()
+        assert not walls[x1][y1], 'point1 is a wall: ' + point1
+        assert not walls[x2][y2], 'point2 is a wall: ' + str(point2)
+        prob = PositionSearchProblem(gameState, start=point1, goal=point2, warn=False, visualize=False)
 
-        return search.breadthFirstSearch(AnyFoodSearchProblem(gameState))
+        return search.bfs(prob)
 
 
 class AnyFoodSearchProblem(PositionSearchProblem):
@@ -615,6 +620,7 @@ class ApproximateSearchAgent(Agent):
     def registerInitialState(self, state):
         "This method is called before any moves are made."
         "*** YOUR CODE HERE ***"
+        pass
 
     def getAction(self, state):
         """
@@ -623,7 +629,7 @@ class ApproximateSearchAgent(Agent):
         Directions.{North, South, East, West, Stop}
         """
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        pass
 
 
 def mazeDistance(point1, point2, gameState):
